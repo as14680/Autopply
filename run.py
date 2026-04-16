@@ -16,6 +16,13 @@ import sys
 # Add job_hunt directory to path so imports resolve
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Auto-load .env if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 
 def _check_api_key():
     if not os.environ.get("ANTHROPIC_API_KEY"):
@@ -26,8 +33,9 @@ def _check_api_key():
 
 def cmd_serve():
     import uvicorn
-    print("Starting Job Hunt dashboard at http://localhost:8000")
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=False)
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Starting Autopply at http://localhost:{port}")
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
 
 
 def cmd_fetch():

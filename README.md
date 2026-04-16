@@ -44,7 +44,7 @@ Morning Brief — Wednesday, April 16, 2026
 
 ---
 
-## Setup
+## Setup (Local)
 
 **1. Clone the repo**
 
@@ -62,42 +62,58 @@ pip install -r requirements.txt
 **3. Set your API key**
 
 ```bash
+cp .env.example .env
+# open .env and add your Anthropic API key
+```
+
+Or just export it inline:
+
+```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Or create a `.env` file (see `.env.example`) and source it:
+**4. Start the server**
 
 ```bash
-cp .env.example .env
-# edit .env and add your key
-source .env
+python run.py serve
 ```
 
-**4. Fill in your profile**
+Open **http://localhost:8000** and go to **Settings** to fill in your profile, paste your resume, and configure job sources — no file editing required.
 
-Open `config.py` and update `USER_PROFILE` with your details:
+---
 
-```python
-USER_PROFILE = {
-    "name": "Jane Smith",
-    "current_title": "Senior Software Engineer",
-    "years_experience": 6,
-    "skills": ["Python", "Go", "React", "PostgreSQL", "AWS"],
-    "target_roles": ["Staff Engineer", "Engineering Manager"],
-    "preferred_locations": ["Remote", "New York, NY"],
-    "salary_range": {"min": 180000, "max": 280000, "currency": "USD"},
-    "preferred_industries": ["AI/ML", "Fintech", "Developer Tools"],
-    "work_preference": "remote",
-    "deal_breakers": ["requires clearance"],
-    "priorities": ["technical growth", "compensation", "remote flexibility"],
-}
+## Deploy to Railway (free tier)
+
+Get a public URL in about 2 minutes:
+
+1. Push this repo to GitHub (already done if you cloned it)
+2. Go to [railway.app](https://railway.app) → New Project → Deploy from GitHub repo → select **Autopply**
+3. Add an environment variable: `ANTHROPIC_API_KEY` = your key
+4. Railway auto-detects the `Dockerfile` and deploys — you get a public URL like `https://autopply-production.up.railway.app`
+
+The `railway.toml` and `Dockerfile` are already included — no extra config needed.
+
+---
+
+## Deploy to Render
+
+1. Go to [render.com](https://render.com) → New Web Service → connect your GitHub repo
+2. Set **Runtime** to Docker (uses the included `Dockerfile`)
+3. Add environment variable: `ANTHROPIC_API_KEY` = your key
+4. Deploy
+
+---
+
+## Deploy to Heroku
+
+```bash
+heroku create autopply
+heroku config:set ANTHROPIC_API_KEY=sk-ant-...
+git push heroku main
+heroku open
 ```
 
-Also configure `JOB_SOURCES` in the same file to point at RSS feeds relevant to your search.
-
-**5. Add your resume**
-
-Paste your resume into `resume.md` in markdown format. This is what Claude uses for all scoring and tailoring — the more detail, the better.
+The `Procfile` is already included.
 
 ---
 
@@ -144,16 +160,19 @@ Your resume and profile are **prompt-cached** on the first scoring call each ses
 
 ```
 Autopply/
-├── config.py          # Your profile, job sources, and settings
-├── resume.md          # Your base resume in markdown
+├── config.py          # Default profile/sources (overridden by DB settings)
+├── resume.md          # Default resume (overridden by Settings page)
 ├── ai_engine.py       # Claude API — scoring, tailoring
 ├── app.py             # FastAPI web server and API endpoints
-├── db.py              # SQLite database layer
+├── db.py              # SQLite database layer (jobs + settings)
 ├── fetcher.py         # RSS feed parser and job storage
 ├── run.py             # CLI entry point
+├── Dockerfile         # Docker image for deployment
+├── Procfile           # Heroku process declaration
+├── railway.toml       # Railway deployment config
 ├── requirements.txt
 └── static/
-    └── index.html     # Dashboard UI
+    └── index.html     # Dashboard SPA (Morning Brief / History / Settings)
 ```
 
 ---
@@ -175,11 +194,14 @@ Then just open the dashboard when you're ready.
 
 ## Adding job sources
 
-Any RSS feed works. Add entries to `JOB_SOURCES` in `config.py`:
+Go to **Settings → Job Sources** in the dashboard and paste any RSS feed URL. No file editing required.
 
-```python
-{"name": "Hacker News", "url": "https://hnrss.org/jobs", "active": True},
-{"name": "AngelList",   "url": "https://angel.co/jobs.rss", "active": True},
+Common sources to add:
+
+```
+https://hnrss.org/jobs            (Hacker News Jobs)
+https://remotive.com/remote-jobs/feed
+https://weworkremotely.com/jobs.rss
 ```
 
 Many job boards (Greenhouse, Lever, Workable) expose company-specific RSS feeds — search for `site:jobs.lever.co/yourcompany RSS` or check the job board's documentation.

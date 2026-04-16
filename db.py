@@ -6,6 +6,11 @@ from pathlib import Path
 DB_PATH = Path(__file__).parent / "jobs.db"
 
 _SCHEMA = """
+CREATE TABLE IF NOT EXISTS settings (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS jobs (
     id          TEXT PRIMARY KEY,
     source      TEXT NOT NULL,
@@ -139,6 +144,19 @@ def get_tailored_resume(job_id: str) -> str | None:
             "SELECT tailored_resume FROM jobs WHERE id = ?", (job_id,)
         ).fetchone()
     return row["tailored_resume"] if row else None
+
+
+def get_setting(key: str, default: str | None = None) -> str | None:
+    with get_db() as db:
+        row = db.execute("SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+    return row["value"] if row else default
+
+
+def set_setting(key: str, value: str) -> None:
+    with get_db() as db:
+        db.execute(
+            "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value)
+        )
 
 
 def get_unscored_jobs(limit: int = 25) -> list[dict]:

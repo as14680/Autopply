@@ -119,14 +119,26 @@ than a false 85."""
 
 
 def _load_resume() -> str:
+    from db import get_setting
+    stored = get_setting("resume")
+    if stored:
+        return stored
     try:
         return RESUME_PATH.read_text()
     except FileNotFoundError:
-        return "(Resume not found — please create job_hunt/resume.md)"
+        return "(Resume not found — please add your resume in Settings)"
+
+
+def _load_profile() -> dict:
+    from db import get_setting
+    stored = get_setting("profile")
+    if stored:
+        return json.loads(stored)
+    return USER_PROFILE
 
 
 def _profile_block() -> str:
-    return f"## Candidate Profile\n\n{json.dumps(USER_PROFILE, indent=2)}\n\n## Resume\n\n{_load_resume()}"
+    return f"## Candidate Profile\n\n{json.dumps(_load_profile(), indent=2)}\n\n## Resume\n\n{_load_resume()}"
 
 
 # ─── Scoring ─────────────────────────────────────────────────────────────────

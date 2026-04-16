@@ -1,21 +1,27 @@
 """
-Job Hunt AI — FastAPI web server.
+Autopply — FastAPI web server.
 """
 
+import json
 from pathlib import Path
+from typing import Any
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+load_dotenv()  # load .env if present
+
 import db
 import fetcher
 import ai_engine
-from config import MIN_SCORE_THRESHOLD, PAGE_SIZE, SCORE_BATCH_SIZE
+from config import MIN_SCORE_THRESHOLD, PAGE_SIZE, SCORE_BATCH_SIZE, USER_PROFILE, JOB_SOURCES
 
-app = FastAPI(title="Job Hunt AI")
+app = FastAPI(title="Autopply")
 
 STATIC = Path(__file__).parent / "static"
+RESUME_PATH = Path(__file__).parent / "resume.md"
 
 
 @app.on_event("startup")
@@ -70,9 +76,8 @@ STATUS_MAP = {
 def job_action(job_id: str, payload: ActionPayload):
     if payload.action not in STATUS_MAP:
         raise HTTPException(status_code=400, detail=f"Unknown action: {payload.action}")
-    new_status = STATUS_MAP[payload.action]
-    db.set_job_status(job_id, new_status)
-    return {"status": "ok", "new_status": new_status}
+    db.set_job_status(job_id, STATUS_MAP[payload.action])
+    return {"status": "ok", "new_status": STATUS_MAP[payload.action]}
 
 
 # ─── Resume Tailoring ─────────────────────────────────────────────────────────
@@ -82,39 +87,62 @@ def tailor_resume(job_id: str):
     job = db.get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
-
-    # Return cached tailored resume if already generated
     existing = db.get_tailored_resume(job_id)
     if existing:
         return {"tailored_resume": existing}
-
     tailored = ai_engine.tailor_resume(job)
     db.save_tailored_resume(job_id, tailored)
     return {"tailored_resume": tailored}
 
 
-@app.get("/api/jobs/{job_id}/tailored-resume")
-def get_tailored_resume(job_id: str):
-    text = db.get_tailored_resume(job_id)
-    if text is None:
-        raise HTTPException(status_code=404, detail="Not yet generated")
-    return {"tailored_resume": text}
+# ─── Settings ────────────────────────────────────────────────────────────────
+
+@app.get("/api/settings")
+def get_settings():
+    default_resume = ""
+    if RESUME_PATH.exists():
+        default_resume = RESUME_PATH.read_text()
+
+    return {
+        "profile": json.loads(db.get_setting("profile") or json.dumps(USER_PROFILE)),
+        "resume": db.get_setting("resume") or default_resume,
+        "job_sources": json.loads(db.get_setting("job_sources") or json.dumps(JOB_SOURCES)),
+    }
 
 
-# ─── Refresh (fetch + score) ─────────────────────────────────────────────────
+class SettingsPayload(BaseModel):
+    profile: dict[str, Any] | None = None
+    resume: str | None = None
+    job_sources: list[dict] | None = None
+
+
+@app.post("/api/settings")
+def save_settings(payload: SettingsPayload):
+    if payload.profile is not None:
+        db.set_setting("profile", json.dumps(payload.profile))
+    if payload.resume is not None:
+        db.set_setting("resume", payload.resume)
+    if payload.job_sources is not None:
+        db.set_setting("job_sources", json.dumps(payload.job_sources))
+    return {"status": "ok"}
+
+
+# ─── Refresh ─────────────────────────────────────────────────────────────────
 
 @app.post("/api/refresh")
 def refresh():
-    """Fetch new jobs from all sources, then score them."""
-    print("Fetching new jobs...")
+    # Use job sources from DB settings if available
+    sources_raw = db.get_setting("job_sources")
+    if sources_raw:
+        import config as _cfg
+        _cfg.JOB_SOURCES = json.loads(sources_raw)
+
     new_jobs = fetcher.fetch_all()
-    print(f"Scoring up to {SCORE_BATCH_SIZE} new jobs...")
     scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
     return {"new_jobs": new_jobs, "scored": scored}
 
 
 @app.post("/api/score-pending")
 def score_pending():
-    """Score unscored jobs without fetching new ones."""
     scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
     return {"scored": scored}
