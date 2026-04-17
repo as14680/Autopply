@@ -22,8 +22,9 @@
   --red:      #ef4444;
   --rbg:      #1c0a0a;
   --blue:     #3b82f6;
+  --bbg:      #0d1a2e;
   --purple:   #a855f7;
-  --sidebar:  190px;
+  --sidebar:  200px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { display: flex; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; font-size: 13px; }
@@ -35,23 +36,29 @@ body { display: flex; height: 100vh; overflow: hidden; background: var(--bg); co
   display: flex; flex-direction: column; overflow: hidden;
 }
 .sidebar-logo {
-  padding: 20px 18px 16px;
+  padding: 18px 16px 14px;
   font-size: 1rem; font-weight: 800; letter-spacing: -0.03em;
   border-bottom: 1px solid var(--border);
-  color: var(--text);
 }
 .sidebar-logo span { color: var(--blue); }
-.sidebar-nav { flex: 1; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav { flex: 1; padding: 8px 6px; display: flex; flex-direction: column; gap: 1px; }
 .nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 6px; cursor: pointer;
-  color: var(--muted); font-size: 0.82rem; font-weight: 500;
-  transition: all 0.12s; user-select: none;
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: 6px; cursor: pointer;
+  color: var(--muted); font-size: 0.81rem; font-weight: 500;
+  transition: all 0.1s; user-select: none; justify-content: space-between;
 }
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active { background: var(--surface3); color: var(--text); font-weight: 600; }
-.nav-icon { font-size: 0.9rem; width: 16px; text-align: center; flex-shrink: 0; }
-.sidebar-footer { padding: 12px 8px; border-top: 1px solid var(--border); }
+.nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-icon { font-size: 0.85rem; width: 15px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  background: var(--blue); color: #fff; border-radius: 99px;
+  font-size: 0.6rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center;
+}
+.nav-badge.warn { background: var(--yellow); color: #000; }
+.sidebar-actions { padding: 10px 6px; display: flex; flex-direction: column; gap: 5px; border-top: 1px solid var(--border); }
+.sidebar-actions .btn { justify-content: center; }
 
 /* ── Content area ── */
 .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
@@ -60,82 +67,107 @@ body { display: flex; height: 100vh; overflow: hidden; background: var(--bg); co
 .page { display: none; flex: 1; flex-direction: column; overflow: hidden; min-height: 0; }
 .page.active { display: flex; }
 
-/* ── Page header (shared) ── */
+/* ── Page header ── */
 .page-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  padding: 14px 22px; border-bottom: 1px solid var(--border); flex-shrink: 0;
 }
-.page-header h1 { font-size: 0.95rem; font-weight: 700; }
-.page-header .sub { color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+.page-header h1 { font-size: 0.93rem; font-weight: 700; }
+.page-header .sub { color: var(--muted); font-size: 0.75rem; margin-top: 2px; }
 
 /* ── Stats bar ── */
 .stats {
   display: flex; border-bottom: 1px solid var(--border);
-  background: var(--surface); flex-shrink: 0;
+  background: var(--surface); flex-shrink: 0; overflow-x: auto;
 }
 .stat {
-  padding: 12px 22px; border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; gap: 2px;
+  padding: 11px 20px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
+  cursor: default;
 }
-.stat-val   { font-size: 1.5rem; font-weight: 800; line-height: 1; }
-.stat-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.stat.clickable { cursor: pointer; transition: background 0.1s; }
+.stat.clickable:hover { background: var(--surface2); }
+.stat-val   { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 0.66rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.stat-val.warn { color: var(--yellow); }
+
+/* ── Alert bar ── */
+.alert-bar {
+  display: none; align-items: center; gap: 10px;
+  padding: 9px 22px; border-bottom: 1px solid #2a2000;
+  background: #1a1400; flex-shrink: 0; font-size: 0.8rem;
+}
+.alert-bar.error { background: #1a0a00; border-color: #3a1500; }
+.alert-bar .alert-icon { font-size: 0.9rem; flex-shrink: 0; }
+.alert-bar .alert-text { flex: 1; color: var(--text); }
+.alert-bar .alert-text strong { color: var(--yellow); }
+.alert-bar.error .alert-text strong { color: var(--red); }
 
 /* ── Filter bar ── */
 .filters {
-  display: flex; gap: 5px; padding: 9px 22px;
+  display: flex; gap: 4px; padding: 8px 22px;
   border-bottom: 1px solid var(--border); flex-shrink: 0; align-items: center;
 }
 .filter-btn {
-  padding: 4px 13px; border-radius: 99px; border: 1px solid var(--border2);
-  background: none; color: var(--muted); cursor: pointer; font-size: 0.78rem;
-  font-family: inherit; transition: all 0.12s;
+  padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border2);
+  background: none; color: var(--muted); cursor: pointer; font-size: 0.76rem;
+  font-family: inherit; transition: all 0.1s; display: flex; align-items: center; gap: 5px;
 }
 .filter-btn:hover  { border-color: var(--muted2); color: var(--text); }
 .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
-.filters-count { margin-left: auto; font-size: 0.74rem; color: var(--muted); }
+.filter-btn .fb-count {
+  font-size: 0.65rem; background: rgba(255,255,255,0.15); padding: 1px 4px; border-radius: 3px;
+}
+.filter-btn.active .fb-count { background: rgba(0,0,0,0.15); }
+.filters-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.filters-count { font-size: 0.72rem; color: var(--muted); }
 
 /* ── Job list + detail panel ── */
 .dash-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
-.job-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
-.empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); }
+.job-list { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 10px; color: var(--muted); text-align: center; }
+.empty-icon { font-size: 2rem; }
+.empty p { font-size: 0.8rem; line-height: 1.5; max-width: 280px; }
 
 /* ── Job card ── */
 .job-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
-  padding: 12px 14px; cursor: pointer;
+  padding: 11px 13px; cursor: pointer;
   display: grid; grid-template-columns: 46px 1fr auto;
-  gap: 10px; align-items: start; transition: border-color 0.12s;
+  gap: 10px; align-items: start; transition: border-color 0.1s;
 }
 .job-card:hover    { border-color: var(--border2); }
 .job-card.selected { border-color: var(--blue) !important; background: #080d16; }
-.job-card.applied  { opacity: 0.5; }
-.job-card.skipped  { opacity: 0.28; }
+.job-card.applied  { opacity: 0.45; }
+.job-card.skipped  { opacity: 0.22; }
 
 .badge {
-  width: 46px; height: 46px; border-radius: 7px; display: flex;
+  width: 46px; height: 46px; border-radius: 7px; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  font-weight: 900; font-size: 0.95rem; flex-shrink: 0;
+  font-weight: 900; font-size: 0.9rem; flex-shrink: 0; line-height: 1;
 }
 .badge-high { background: var(--gbg); color: var(--green); }
 .badge-mid  { background: var(--ybg); color: var(--yellow); }
 .badge-low  { background: var(--rbg); color: var(--red); }
-.badge-none { background: var(--surface2); color: var(--muted); }
+.badge-none { background: var(--surface2); color: var(--muted); font-size: 0.7rem; }
+.badge-grade { font-size: 0.6rem; opacity: 0.7; margin-top: 1px; }
 
-.card-title { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-meta  { color: var(--muted); font-size: 0.75rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-tags  { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 7px; }
-.tag        { padding: 1px 6px; border-radius: 3px; font-size: 0.67rem; background: var(--surface2); color: var(--muted2); }
+.card-title { font-weight: 600; font-size: 0.87rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta  { color: var(--muted); font-size: 0.73rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-tags  { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
+.tag        { padding: 1px 6px; border-radius: 3px; font-size: 0.65rem; background: var(--surface2); color: var(--muted2); }
 .tag.match  { background: var(--gbg); color: var(--green); }
+.tag.gap    { background: var(--ybg); color: var(--yellow); }
 .card-actions { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; padding-top: 1px; }
 
 /* ── Buttons ── */
 .btn {
   padding: 5px 11px; border-radius: 6px; border: none; cursor: pointer;
-  font-size: 0.76rem; font-weight: 600; font-family: inherit; white-space: nowrap;
-  line-height: 1.2; transition: all 0.12s; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; font-weight: 600; font-family: inherit; white-space: nowrap;
+  line-height: 1.2; transition: all 0.1s; display: inline-flex; align-items: center; gap: 5px;
 }
 .btn-apply   { background: var(--green); color: #000; }
-.btn-apply:hover   { filter: brightness(1.15); }
+.btn-apply:hover   { filter: brightness(1.12); }
 .btn-skip    { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
 .btn-skip:hover    { color: var(--red); border-color: var(--red); }
 .btn-maybe   { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
@@ -144,81 +176,92 @@ body { display: flex; height: 100vh; overflow: hidden; background: var(--bg); co
 .btn-ghost:hover   { border-color: var(--muted2); color: var(--text); }
 .btn-primary { background: var(--blue); color: #fff; }
 .btn-primary:hover { filter: brightness(1.1); }
+.btn-warn    { background: var(--yellow); color: #000; font-weight: 700; }
+.btn-warn:hover    { filter: brightness(1.1); }
 .btn-danger  { background: var(--rbg); color: var(--red); border: 1px solid #3f0000; }
 .btn-danger:hover  { filter: brightness(1.2); }
-.btn-sm { padding: 4px 9px; font-size: 0.72rem; }
+.btn-sm { padding: 4px 9px; font-size: 0.71rem; }
 .btn-xs { padding: 3px 7px; font-size: 0.68rem; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; filter: none !important; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; filter: none !important; }
 
 /* ── Detail panel ── */
 .detail {
-  width: 400px; border-left: 1px solid var(--border);
+  width: 420px; border-left: 1px solid var(--border);
   overflow-y: auto; flex-shrink: 0; background: var(--bg);
   display: none;
 }
 .detail.open { display: block; }
-.detail-inner { padding: 22px; }
-.detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; gap: 8px; color: var(--muted); }
+.detail-inner { padding: 20px; }
+.detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; gap: 8px; color: var(--muted); font-size: 0.8rem; }
 
 .detail-score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.big-score { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+.big-score { font-size: 2.6rem; font-weight: 900; line-height: 1; }
 .score-green  { color: var(--green); }
 .score-yellow { color: var(--yellow); }
 .score-red    { color: var(--red); }
 .score-none   { color: var(--muted); }
-.detail-title   { font-size: 0.98rem; font-weight: 700; }
-.detail-company { color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+.detail-title   { font-size: 0.95rem; font-weight: 700; }
+.detail-company { color: var(--muted); font-size: 0.76rem; margin-top: 3px; }
+.detail-posted  { color: var(--muted2); font-size: 0.7rem; margin-top: 2px; }
 
 .rec-banner {
-  padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
-  margin-bottom: 16px; border: 1px solid transparent;
+  padding: 8px 12px; border-radius: 6px; font-size: 0.79rem; font-weight: 600;
+  margin-bottom: 14px; border: 1px solid transparent; display: flex; align-items: center; gap: 7px;
 }
 .rec-strong_apply { background: var(--gbg); color: var(--green);  border-color: #14532d; }
 .rec-apply        { background: var(--gbg); color: var(--green);  border-color: #166534; }
 .rec-maybe        { background: var(--ybg); color: var(--yellow); border-color: #713f12; }
 .rec-skip         { background: var(--rbg); color: var(--red);    border-color: #7f1d1d; }
 
-.detail-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 18px; }
 
 .hook-box {
   background: var(--surface); border-left: 3px solid var(--purple);
-  padding: 9px 12px; font-style: italic; font-size: 0.8rem; line-height: 1.55;
+  padding: 9px 12px; font-style: italic; font-size: 0.79rem; line-height: 1.55;
   border-radius: 0 6px 6px 0; color: var(--text); margin-bottom: 4px;
 }
-.section { margin-bottom: 18px; }
+.section { margin-bottom: 16px; }
 .section-title {
-  font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--muted); font-weight: 700; margin-bottom: 7px;
+  font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); font-weight: 700; margin-bottom: 6px;
 }
-.list-item { display: flex; gap: 7px; padding: 2px 0; font-size: 0.8rem; line-height: 1.45; }
+.list-item { display: flex; gap: 7px; padding: 2px 0; font-size: 0.79rem; line-height: 1.45; }
 .list-item::before { content: "•"; color: var(--muted2); flex-shrink: 0; margin-top: 1px; }
-.gap-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px; margin-bottom: 4px; }
-.gap-title { font-size: 0.8rem; font-weight: 600; }
-.gap-addr  { color: var(--muted); font-size: 0.74rem; margin-top: 2px; }
-.sev { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.65rem; font-weight: 700; margin-right: 5px; }
+.gap-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 4px; }
+.gap-title { font-size: 0.79rem; font-weight: 600; }
+.gap-addr  { color: var(--muted); font-size: 0.73rem; margin-top: 2px; }
+.sev { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.63rem; font-weight: 700; margin-right: 5px; }
 .sev-major    { background: var(--rbg); color: var(--red); }
 .sev-moderate { background: var(--ybg); color: var(--yellow); }
 .sev-minor    { background: var(--gbg); color: var(--green); }
-.net-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 11px; margin-bottom: 4px; }
-.net-role { font-size: 0.8rem; font-weight: 600; }
-.net-why  { color: var(--muted); font-size: 0.74rem; margin-top: 1px; }
-.desc-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 0.75rem; line-height: 1.55; color: var(--muted); white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
-hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.net-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; margin-bottom: 4px; }
+.net-role { font-size: 0.79rem; font-weight: 600; }
+.net-why  { color: var(--muted); font-size: 0.72rem; margin-top: 1px; }
+.desc-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 0.74rem; line-height: 1.55; color: var(--muted); white-space: pre-wrap; max-height: 180px; overflow-y: auto; }
+hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+/* ── Pending tab ── */
+.pending-header {
+  display: none; align-items: center; justify-content: space-between;
+  padding: 10px 22px; background: var(--ybg); border-bottom: 1px solid #2a1a00;
+  flex-shrink: 0;
+}
+.pending-header span { font-size: 0.8rem; color: var(--yellow); font-weight: 500; }
 
 /* ── History page ── */
-.history-body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.history-body { flex: 1; overflow-y: auto; padding: 14px 22px; }
 .history-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
-  padding: 12px 16px; margin-bottom: 6px;
-  display: flex; align-items: center; gap: 14px;
+  padding: 11px 14px; margin-bottom: 5px;
+  display: flex; align-items: center; gap: 12px;
 }
-.history-card .badge { width: 38px; height: 38px; font-size: 0.82rem; }
+.history-card .badge { width: 38px; height: 38px; font-size: 0.8rem; }
 .history-info { flex: 1; min-width: 0; }
-.history-title { font-weight: 600; font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.history-meta  { color: var(--muted); font-size: 0.74rem; margin-top: 2px; }
+.history-title { font-weight: 600; font-size: 0.84rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-meta  { color: var(--muted); font-size: 0.72rem; margin-top: 2px; }
 .history-status {
-  padding: 3px 9px; border-radius: 99px; font-size: 0.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;
+  padding: 2px 8px; border-radius: 99px; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0;
 }
 .hs-applied { background: var(--gbg); color: var(--green); }
 .hs-maybe   { background: var(--ybg); color: var(--yellow); }
@@ -226,41 +269,42 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* ── Settings page ── */
 .settings-body { flex: 1; overflow-y: auto; }
-.settings-inner { padding: 24px; max-width: 740px; }
+.settings-inner { padding: 22px; max-width: 720px; }
 .settings-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 22px; margin-bottom: 16px;
+  padding: 20px; margin-bottom: 14px;
 }
-.settings-card h2 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
-.settings-card .card-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 18px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.settings-card h2 { font-size: 0.86rem; font-weight: 700; margin-bottom: 4px; }
+.settings-card .card-desc { font-size: 0.77rem; color: var(--muted); margin-bottom: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .form-grid .full { grid-column: 1 / -1; }
-.field { display: flex; flex-direction: column; gap: 5px; }
-.field label { font-size: 0.75rem; font-weight: 600; color: var(--muted); }
-.field .hint  { font-size: 0.68rem; font-weight: 400; color: var(--muted2); margin-left: 4px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 0.73rem; font-weight: 600; color: var(--muted); }
+.field .hint  { font-size: 0.67rem; font-weight: 400; color: var(--muted2); margin-left: 4px; }
 .field input, .field select, .field textarea {
   background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px;
-  color: var(--text); font-family: inherit; font-size: 0.82rem; padding: 8px 10px;
-  outline: none; transition: border-color 0.12s;
+  color: var(--text); font-family: inherit; font-size: 0.81rem; padding: 7px 9px;
+  outline: none; transition: border-color 0.1s;
 }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
-.field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-#resumeInput { min-height: 340px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.76rem; }
-.salary-row { display: flex; align-items: center; gap: 8px; }
-.salary-row span { color: var(--muted); font-size: 0.78rem; flex-shrink: 0; }
+.field textarea { resize: vertical; min-height: 76px; line-height: 1.5; }
+#resumeInput { min-height: 320px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.74rem; }
+.salary-row { display: flex; align-items: center; gap: 7px; }
+.salary-row span { color: var(--muted); font-size: 0.77rem; flex-shrink: 0; }
 .salary-row input { flex: 1; }
 
 /* Sources list */
-.sources-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.sources-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
 .source-row {
-  display: grid; grid-template-columns: 130px 1fr 80px auto;
-  gap: 8px; align-items: center; background: var(--surface2);
-  border: 1px solid var(--border2); border-radius: 6px; padding: 8px 10px;
+  display: grid; grid-template-columns: 140px 1fr 72px auto;
+  gap: 7px; align-items: center; background: var(--surface2);
+  border: 1px solid var(--border2); border-radius: 6px; padding: 7px 9px;
 }
-.source-row input { background: none; border: none; color: var(--text); font-family: inherit; font-size: 0.8rem; outline: none; padding: 0; }
+.source-row input { background: none; border: none; color: var(--text); font-family: inherit; font-size: 0.78rem; outline: none; padding: 0; }
 .source-row input::placeholder { color: var(--muted2); }
-.source-active { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.76rem; color: var(--muted); }
+.source-active { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.74rem; color: var(--muted); }
 .source-active input[type=checkbox] { accent-color: var(--green); cursor: pointer; }
+.sources-tip { font-size: 0.72rem; color: var(--muted2); margin-bottom: 10px; line-height: 1.5; }
 
 /* ── Modal ── */
 .modal-bg {
@@ -270,41 +314,41 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .modal-bg.open { display: flex; }
 .modal {
   background: var(--surface); border: 1px solid var(--border2);
-  border-radius: 12px; padding: 22px; width: 680px; max-width: 94vw;
-  max-height: 86vh; display: flex; flex-direction: column; gap: 14px;
+  border-radius: 12px; padding: 20px; width: 700px; max-width: 94vw;
+  max-height: 86vh; display: flex; flex-direction: column; gap: 12px;
 }
 .modal-header { display: flex; justify-content: space-between; align-items: center; }
-.modal-title  { font-weight: 700; font-size: 0.9rem; }
+.modal-title  { font-weight: 700; font-size: 0.88rem; }
 .modal-body   { overflow-y: auto; flex: 1; }
 .resume-txt {
   white-space: pre-wrap; font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 0.75rem; line-height: 1.6; color: var(--muted);
+  font-size: 0.73rem; line-height: 1.6; color: var(--muted);
   background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px;
 }
 
 /* ── Setup banner ── */
 .setup-banner {
-  background: #0d1a2e; border: 1px solid #1e3a5f; border-radius: 8px;
-  padding: 14px 18px; margin: 16px 24px; display: flex; align-items: center;
-  gap: 12px; font-size: 0.82rem;
+  background: var(--bbg); border: 1px solid #1e3a5f; border-radius: 8px;
+  padding: 12px 16px; margin: 14px 22px; display: flex; align-items: center;
+  gap: 10px; font-size: 0.8rem;
 }
 .setup-banner span { flex: 1; color: var(--text); }
 .setup-banner strong { color: var(--blue); }
 
 /* ── Toast ── */
 .toast {
-  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
   background: var(--surface3); border: 1px solid var(--border2);
-  color: var(--text); padding: 8px 16px; border-radius: 8px; font-size: 0.8rem;
+  color: var(--text); padding: 7px 14px; border-radius: 8px; font-size: 0.78rem;
   z-index: 200; box-shadow: 0 4px 20px rgba(0,0,0,0.5); pointer-events: none;
-  opacity: 0; transition: opacity 0.2s;
+  opacity: 0; transition: opacity 0.15s; white-space: nowrap;
 }
 .toast.show { opacity: 1; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
-  width: 13px; height: 13px; border: 2px solid var(--border2);
-  border-top-color: var(--text); border-radius: 50%; animation: spin 0.65s linear infinite; display: inline-block;
+  width: 12px; height: 12px; border: 2px solid var(--border2);
+  border-top-color: var(--text); border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block;
 }
 </style>
 </head>
@@ -314,19 +358,24 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 <nav class="sidebar">
   <div class="sidebar-logo">Auto<span>pply</span></div>
   <div class="sidebar-nav">
-    <div class="nav-item active" onclick="showPage('dashboard')">
-      <span class="nav-icon">☀</span> Morning Brief
+    <div class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+      <div class="nav-left"><span class="nav-icon">☀</span> Morning Brief</div>
+      <span class="nav-badge" id="navBadgeReview" style="display:none"></span>
     </div>
-    <div class="nav-item" onclick="showPage('history')">
-      <span class="nav-icon">📁</span> History
+    <div class="nav-item" id="nav-history" onclick="showPage('history')">
+      <div class="nav-left"><span class="nav-icon">📁</span> History</div>
+      <span class="nav-badge" id="navBadgeApplied" style="display:none"></span>
     </div>
-    <div class="nav-item" onclick="showPage('settings')">
-      <span class="nav-icon">⚙</span> Settings
+    <div class="nav-item" id="nav-settings" onclick="showPage('settings')">
+      <div class="nav-left"><span class="nav-icon">⚙</span> Settings</div>
     </div>
   </div>
-  <div class="sidebar-footer">
-    <button class="btn btn-ghost" id="refreshBtn" style="width:100%;justify-content:center" onclick="doRefresh()">
+  <div class="sidebar-actions">
+    <button class="btn btn-primary" id="refreshBtn" onclick="doRefresh()">
       ↻ Refresh Jobs
+    </button>
+    <button class="btn btn-ghost btn-sm" id="scoreBtn" onclick="doScorePending()" style="display:none">
+      ⚡ Score Pending
     </button>
   </div>
 </nav>
@@ -341,29 +390,80 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
         <h1>Morning Brief</h1>
         <div class="sub" id="dateDisplay"></div>
       </div>
+      <div id="lastRefreshInfo" style="font-size:0.72rem;color:var(--muted)"></div>
     </div>
+
+    <!-- Stats -->
     <div class="stats" id="statsBar">
-      <div class="stat"><span class="stat-val" id="sReview">—</span><span class="stat-label">To Review</span></div>
-      <div class="stat"><span class="stat-val" id="sScore">—</span><span class="stat-label">Avg Fit</span></div>
-      <div class="stat"><span class="stat-val" id="sApplied">—</span><span class="stat-label">Applied</span></div>
-      <div class="stat"><span class="stat-val" id="sMaybe">—</span><span class="stat-label">Maybe</span></div>
-      <div class="stat"><span class="stat-val" id="sNew">—</span><span class="stat-label">Unscored</span></div>
+      <div class="stat clickable" onclick="setFilter(null,'scored')" title="Click to review">
+        <span class="stat-val" id="sReview">—</span>
+        <span class="stat-label">To Review</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="sScore">—</span>
+        <span class="stat-label">Avg Fit</span>
+      </div>
+      <div class="stat clickable" onclick="setFilter(null,'applied')" title="View applied">
+        <span class="stat-val" id="sApplied">—</span>
+        <span class="stat-label">Applied</span>
+      </div>
+      <div class="stat clickable" onclick="setFilter(null,'maybe')" title="View maybe">
+        <span class="stat-val" id="sMaybe">—</span>
+        <span class="stat-label">Maybe</span>
+      </div>
+      <div class="stat clickable" id="statPending" onclick="setFilter(null,'new')" title="Click to see unscored jobs">
+        <span class="stat-val" id="sNew">—</span>
+        <span class="stat-label">Pending Score</span>
+      </div>
     </div>
+
+    <!-- Alert bar (shown when unscored > 0 or errors present) -->
+    <div class="alert-bar" id="alertBar">
+      <span class="alert-icon" id="alertIcon">⏳</span>
+      <span class="alert-text" id="alertText"></span>
+      <button class="btn btn-warn btn-sm" id="alertBtn" onclick="doScorePending()">⚡ Score Now</button>
+      <button class="btn btn-ghost btn-xs" onclick="dismissAlert()" style="flex-shrink:0">✕</button>
+    </div>
+
+    <!-- Setup banner (first run) -->
     <div id="setupBanner" style="display:none" class="setup-banner">
-      <span>👋 <strong>Welcome!</strong> Fill in your profile and resume before refreshing jobs.</span>
-      <button class="btn btn-primary btn-sm" onclick="showPage('settings')">Go to Settings →</button>
+      <span>👋 <strong>First time?</strong> Go to Settings → add your profile, resume, and job sources. Then click Refresh Jobs.</span>
+      <button class="btn btn-primary btn-sm" onclick="showPage('settings')">Open Settings →</button>
     </div>
+
+    <!-- Filter tabs -->
     <div class="filters">
-      <button class="filter-btn active" onclick="setFilter(this,'scored')">To Review</button>
-      <button class="filter-btn" onclick="setFilter(this,'maybe')">Maybe Later</button>
-      <button class="filter-btn" onclick="setFilter(this,'all')">All</button>
-      <span class="filters-count" id="jobCount"></span>
+      <button class="filter-btn active" id="ftScored" onclick="setFilter(this,'scored')">
+        To Review <span class="fb-count" id="ftScoredCount"></span>
+      </button>
+      <button class="filter-btn" id="ftNew" onclick="setFilter(this,'new')">
+        Pending <span class="fb-count" id="ftNewCount"></span>
+      </button>
+      <button class="filter-btn" id="ftMaybe" onclick="setFilter(this,'maybe')">
+        Maybe Later <span class="fb-count" id="ftMaybeCount"></span>
+      </button>
+      <button class="filter-btn" id="ftAll" onclick="setFilter(this,'all')">All</button>
+      <div class="filters-right">
+        <span class="filters-count" id="jobCount"></span>
+        <button class="btn btn-warn btn-sm" id="filterScoreBtn" style="display:none" onclick="doScorePending()">⚡ Score All Pending</button>
+      </div>
     </div>
+
+    <!-- Pending tab header -->
+    <div class="pending-header" id="pendingHeader">
+      <span>These jobs were fetched but not yet scored by Claude. Click Score All Pending to analyze them.</span>
+      <button class="btn btn-warn btn-sm" onclick="doScorePending()">⚡ Score All Pending</button>
+    </div>
+
+    <!-- Job list + detail -->
     <div class="dash-body">
-      <div class="job-list" id="jobList"><div class="empty">Loading…</div></div>
+      <div class="job-list" id="jobList"><div class="empty"><div class="empty-icon">⏳</div><p>Loading…</p></div></div>
       <div class="detail" id="detailPanel">
         <div class="detail-inner">
-          <div class="detail-empty"><div style="font-size:1.8rem;margin-bottom:4px">→</div><div>Select a job to see full analysis</div></div>
+          <div class="detail-empty">
+            <div style="font-size:1.6rem;margin-bottom:4px">←</div>
+            <div>Select a job to see the full AI analysis</div>
+          </div>
         </div>
       </div>
     </div>
@@ -373,19 +473,19 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   <div id="page-history" class="page">
     <div class="page-header">
       <div><h1>Application History</h1><div class="sub">Jobs you've acted on</div></div>
-      <div style="display:flex;gap:6px">
+      <div style="display:flex;gap:5px">
         <button class="filter-btn active" onclick="setHistFilter(this,'applied')">Applied</button>
         <button class="filter-btn" onclick="setHistFilter(this,'maybe')">Maybe</button>
         <button class="filter-btn" onclick="setHistFilter(this,'skipped')">Skipped</button>
       </div>
     </div>
-    <div class="history-body" id="historyBody"><div class="empty">Loading…</div></div>
+    <div class="history-body" id="historyBody"><div class="empty"><p>Loading…</p></div></div>
   </div>
 
   <!-- ── Settings page ── -->
   <div id="page-settings" class="page">
     <div class="page-header">
-      <div><h1>Settings</h1><div class="sub">Configure your profile, resume, and job sources</div></div>
+      <div><h1>Settings</h1><div class="sub">Profile, resume, and job sources</div></div>
       <button class="btn btn-primary" id="saveBtn" onclick="saveSettings()">Save Changes</button>
     </div>
     <div class="settings-body">
@@ -394,7 +494,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
         <!-- Profile -->
         <div class="settings-card">
           <h2>Your Profile</h2>
-          <p class="card-desc">Used by Claude to score every job against your background and goals.</p>
+          <p class="card-desc">Claude uses this to score every job — the more detail you add, the more accurate the fit scores.</p>
           <div class="form-grid">
             <div class="field">
               <label>Full Name</label>
@@ -402,11 +502,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
             </div>
             <div class="field">
               <label>Current Title</label>
-              <input type="text" id="s-title" placeholder="Senior Software Engineer">
+              <input type="text" id="s-title" placeholder="Senior Product Manager">
             </div>
             <div class="field">
               <label>Years of Experience</label>
-              <input type="number" id="s-yoe" min="0" max="50" placeholder="5">
+              <input type="number" id="s-yoe" min="0" max="50" placeholder="7">
             </div>
             <div class="field">
               <label>Work Preference</label>
@@ -417,36 +517,36 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
               </select>
             </div>
             <div class="field full">
-              <label>Skills <span class="hint">comma-separated</span></label>
-              <input type="text" id="s-skills" placeholder="Python, React, AWS, PostgreSQL">
+              <label>Skills & Expertise <span class="hint">comma-separated</span></label>
+              <input type="text" id="s-skills" placeholder="Product Strategy, Roadmapping, Stakeholder Management, SQL, Figma, Agile, A/B Testing, Go-to-Market">
             </div>
             <div class="field full">
               <label>Target Roles <span class="hint">comma-separated</span></label>
-              <input type="text" id="s-roles" placeholder="Senior Engineer, Staff Engineer">
+              <input type="text" id="s-roles" placeholder="Senior Product Manager, Principal PM, Group PM, Director of Product">
             </div>
             <div class="field full">
               <label>Preferred Locations <span class="hint">comma-separated</span></label>
-              <input type="text" id="s-locations" placeholder="Remote, San Francisco, New York">
+              <input type="text" id="s-locations" placeholder="Remote, New York, San Francisco">
             </div>
             <div class="field full">
               <label>Preferred Industries <span class="hint">comma-separated</span></label>
-              <input type="text" id="s-industries" placeholder="AI/ML, Fintech, SaaS">
+              <input type="text" id="s-industries" placeholder="AI/ML, SaaS, Fintech, Developer Tools, Consumer">
             </div>
             <div class="field full">
               <label>Salary Range (USD)</label>
               <div class="salary-row">
-                <input type="number" id="s-sal-min" placeholder="150000" step="10000">
+                <input type="number" id="s-sal-min" placeholder="180000" step="10000">
                 <span>—</span>
-                <input type="number" id="s-sal-max" placeholder="250000" step="10000">
+                <input type="number" id="s-sal-max" placeholder="300000" step="10000">
               </div>
             </div>
             <div class="field full">
-              <label>Deal Breakers <span class="hint">comma-separated — auto-skip these</span></label>
-              <input type="text" id="s-dealbreakers" placeholder="requires clearance, no remote">
+              <label>Deal Breakers <span class="hint">comma-separated — auto-flagged as red flags</span></label>
+              <input type="text" id="s-dealbreakers" placeholder="early stage only, no remote, requires clearance">
             </div>
             <div class="field full">
               <label>What Matters Most <span class="hint">comma-separated priorities</span></label>
-              <input type="text" id="s-priorities" placeholder="technical growth, compensation, remote flexibility">
+              <input type="text" id="s-priorities" placeholder="scope and ownership, team quality, compensation, growth stage">
             </div>
           </div>
         </div>
@@ -454,18 +554,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
         <!-- Resume -->
         <div class="settings-card">
           <h2>Your Resume</h2>
-          <p class="card-desc">Paste your resume in markdown. Claude uses this to score fit and tailor applications.</p>
+          <p class="card-desc">Paste your full resume in plain text or markdown. This is what Claude reads to score fit and generate tailored versions.</p>
           <div class="field">
-            <textarea id="resumeInput" placeholder="# Your Name&#10;email@example.com&#10;&#10;## Experience&#10;..."></textarea>
+            <textarea id="resumeInput" placeholder="# Your Name&#10;your@email.com  |  linkedin.com/in/you&#10;&#10;## Experience&#10;&#10;### Senior Product Manager — Acme Corp (2021–present)&#10;- Led roadmap for...&#10;&#10;## Education&#10;..."></textarea>
           </div>
         </div>
 
         <!-- Job Sources -->
         <div class="settings-card">
           <h2>Job Sources</h2>
-          <p class="card-desc">RSS feeds to pull listings from. Any job board with an RSS feed works.</p>
+          <p class="card-desc">RSS feeds to pull listings from. The defaults are tuned for Product Manager roles.</p>
+          <div class="sources-tip">
+            💡 <strong>PM feeds already active:</strong> Remotive Product, WWR Management, Remote.co PM, HackerNews Jobs.<br>
+            For engineering roles, enable the engineering feeds below. Add any company-specific Greenhouse/Lever feed as a custom source.
+          </div>
           <div class="sources-list" id="sourcesList"></div>
-          <button class="btn btn-ghost btn-sm" onclick="addSource()">+ Add Source</button>
+          <button class="btn btn-ghost btn-sm" onclick="addSource()">+ Add Custom Source</button>
         </div>
 
       </div>
@@ -492,29 +596,29 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 <script>
 // ── State ─────────────────────────────────────────────────────────────────────
-let currentFilter  = 'scored';
+let currentFilter     = 'scored';
 let currentHistFilter = 'applied';
 let jobs = [];
 let selectedId = null;
+let statsCache = {};
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 document.getElementById('dateDisplay').textContent =
   new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-loadStats();
-loadJobs();
-checkSetup();
+init();
+
+async function init() {
+  await Promise.all([loadStats(), loadJobs()]);
+  checkSetup();
+}
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.textContent.toLowerCase().includes(
-        name === 'dashboard' ? 'brief' : name
-    )) n.classList.add('active');
-  });
+  document.getElementById('nav-' + name)?.classList.add('active');
   if (name === 'history') loadHistory(currentHistFilter);
   if (name === 'settings') loadSettingsForm();
 }
@@ -522,7 +626,11 @@ function showPage(name) {
 // ── API ───────────────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
   const r = await fetch('/api' + path, { headers: {'Content-Type':'application/json'}, ...opts });
-  if (!r.ok) { const t = await r.text(); throw new Error(t); }
+  if (!r.ok) {
+    let msg;
+    try { msg = (await r.json()).detail || r.statusText; } catch { msg = r.statusText; }
+    throw new Error(msg);
+  }
   return r.json();
 }
 
@@ -539,25 +647,92 @@ async function checkSetup() {
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 async function loadStats() {
-  const s = await api('/stats');
-  document.getElementById('sReview').textContent  = s.to_review  ?? 0;
-  document.getElementById('sScore').textContent   = s.avg_score  ?? '—';
-  document.getElementById('sApplied').textContent = s.applied    ?? 0;
-  document.getElementById('sMaybe').textContent   = s.maybe      ?? 0;
-  document.getElementById('sNew').textContent     = s.unscored   ?? 0;
+  try {
+    const s = await api('/stats');
+    statsCache = s;
+    document.getElementById('sReview').textContent  = s.to_review  ?? 0;
+    document.getElementById('sScore').textContent   = s.avg_score  ? s.avg_score + '%' : '—';
+    document.getElementById('sApplied').textContent = s.applied    ?? 0;
+    document.getElementById('sMaybe').textContent   = s.maybe      ?? 0;
+
+    const pending = s.unscored ?? 0;
+    document.getElementById('sNew').textContent = pending;
+    const pendingEl = document.getElementById('sNew');
+    pendingEl.classList.toggle('warn', pending > 0);
+
+    // Sidebar badges
+    const revBadge = document.getElementById('navBadgeReview');
+    if (s.to_review > 0) { revBadge.textContent = s.to_review; revBadge.style.display = ''; }
+    else revBadge.style.display = 'none';
+
+    const appBadge = document.getElementById('navBadgeApplied');
+    if (s.applied > 0) { appBadge.textContent = s.applied; appBadge.style.display = ''; }
+    else appBadge.style.display = 'none';
+
+    // Filter tab counts
+    document.getElementById('ftScoredCount').textContent = s.to_review > 0 ? s.to_review : '';
+    document.getElementById('ftNewCount').textContent   = pending > 0 ? pending : '';
+    document.getElementById('ftMaybeCount').textContent = s.maybe > 0 ? s.maybe : '';
+
+    // Score pending button in sidebar
+    document.getElementById('scoreBtn').style.display = pending > 0 ? '' : 'none';
+
+    // Alert bar
+    if (pending > 0 && currentFilter !== 'new') {
+      showAlert(`<strong>${pending} job${pending>1?'s':''} fetched</strong> but not yet scored by Claude.`, false);
+    } else {
+      dismissAlert();
+    }
+  } catch(e) {}
+}
+
+function showAlert(html, isError) {
+  const bar = document.getElementById('alertBar');
+  document.getElementById('alertText').innerHTML = html;
+  document.getElementById('alertIcon').textContent = isError ? '⚠' : '⏳';
+  document.getElementById('alertBtn').style.display = isError ? 'none' : '';
+  bar.className = 'alert-bar' + (isError ? ' error' : '');
+  bar.style.display = 'flex';
+}
+
+function dismissAlert() {
+  document.getElementById('alertBar').style.display = 'none';
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 async function loadJobs() {
   const list = document.getElementById('jobList');
-  list.innerHTML = '<div class="empty">Loading…</div>';
+  list.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Loading…</p></div>';
   try {
     jobs = await api('/jobs?status=' + currentFilter + '&limit=100');
     document.getElementById('jobCount').textContent = jobs.length ? jobs.length + ' jobs' : '';
-    list.innerHTML = jobs.length ? jobs.map(renderCard).join('') : '<div class="empty">Nothing here</div>';
+    if (!jobs.length) {
+      list.innerHTML = renderEmptyState();
+    } else {
+      list.innerHTML = jobs.map(renderCard).join('');
+    }
   } catch(e) {
-    list.innerHTML = '<div class="empty">Error loading jobs</div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">⚠</div><p>Error loading jobs.<br>' + esc(e.message) + '</p></div>';
   }
+}
+
+function renderEmptyState() {
+  const states = {
+    scored: `<div class="empty-icon">🎯</div>
+             <p>No scored jobs yet.</p>
+             ${statsCache.unscored > 0
+               ? `<p style="color:var(--yellow)">${statsCache.unscored} jobs are pending scoring.</p>
+                  <button class="btn btn-warn" onclick="doScorePending()" style="margin-top:6px">⚡ Score Now</button>`
+               : `<p>Click <strong>Refresh Jobs</strong> in the sidebar to fetch and score new listings.</p>`}`,
+    new:    `<div class="empty-icon">✓</div>
+             <p>No pending jobs.</p>
+             <p>All fetched jobs have been scored. Click <strong>Refresh Jobs</strong> to check for new listings.</p>`,
+    maybe:  `<div class="empty-icon">📋</div><p>No "Maybe" jobs yet.</p><p>Use the Maybe button on any job card to save it here.</p>`,
+    all:    `<div class="empty-icon">📭</div>
+             <p>No jobs yet.</p>
+             <p>Click <strong>Refresh Jobs</strong> to fetch listings from your configured sources.</p>`,
+  };
+  return `<div class="empty">${states[currentFilter] || states.all}</div>`;
 }
 
 function badgeClass(score) {
@@ -565,24 +740,44 @@ function badgeClass(score) {
   return score >= 75 ? 'badge-high' : score >= 55 ? 'badge-mid' : 'badge-low';
 }
 
+function scoreGrade(score) {
+  if (score == null) return '';
+  if (score >= 85) return 'A';
+  if (score >= 70) return 'B';
+  if (score >= 55) return 'C';
+  return 'D';
+}
+
 function renderCard(job) {
   const a = job.analysis || {};
   const matches = (a.strong_matches || []).slice(0,3);
-  const isActive = job.status === 'scored' || job.status === 'new';
+  const gaps    = (a.gaps || []).filter(g => g.severity === 'major').slice(0,1);
+  const isPending = job.status === 'new';
+  const isActive  = job.status === 'scored' || isPending;
+  const score = job.fit_score;
   return `
   <div class="job-card ${job.status}" id="card-${job.id}" onclick="selectJob('${job.id}')">
-    <div class="badge ${badgeClass(job.fit_score)}">${job.fit_score ?? '?'}</div>
+    <div class="badge ${badgeClass(score)}">
+      ${score ?? '?'}
+      ${score != null ? `<div class="badge-grade">${scoreGrade(score)}</div>` : ''}
+    </div>
     <div>
       <div class="card-title">${esc(job.title)}</div>
-      <div class="card-meta">${esc(job.company||'Unknown')} · ${esc(job.location||'')} · ${esc(job.source)}</div>
-      ${matches.length ? `<div class="card-tags">${matches.map(m=>`<span class="tag match">${esc(m)}</span>`).join('')}</div>` : ''}
+      <div class="card-meta">${esc(job.company||'Unknown')} · ${esc(job.location||'Remote')} · ${esc(job.source)}</div>
+      ${isPending ? '<div class="card-meta" style="color:var(--yellow);margin-top:3px">⏳ Awaiting AI scoring</div>' : ''}
+      ${matches.length || gaps.length ? `<div class="card-tags">
+        ${matches.map(m=>`<span class="tag match">✓ ${esc(m)}</span>`).join('')}
+        ${gaps.map(g=>`<span class="tag gap">✗ ${esc(g.gap||g)}</span>`).join('')}
+      </div>` : ''}
     </div>
     <div class="card-actions" onclick="event.stopPropagation()">
-      ${isActive
+      ${isActive && !isPending
         ? `<button class="btn btn-apply btn-sm"  onclick="doAction('${job.id}','apply')">Apply</button>
            <button class="btn btn-maybe btn-sm"  onclick="doAction('${job.id}','maybe')">Maybe</button>
            <button class="btn btn-skip btn-sm"   onclick="doAction('${job.id}','skip')">Skip</button>`
-        : `<span style="color:var(--muted);font-size:0.7rem;padding-top:4px">${job.status}</span>`
+        : isPending
+          ? `<span style="color:var(--yellow);font-size:0.7rem;padding-top:4px">Unscored</span>`
+          : `<span style="color:var(--muted);font-size:0.7rem;padding-top:4px">${job.status}</span>`
       }
     </div>
   </div>`;
@@ -602,7 +797,7 @@ function selectJob(id) {
 const REC_LABELS = {
   strong_apply: '⚡ Strong Apply — exceptional match',
   apply:        '✓ Apply — worth your time',
-  maybe:        '~ Maybe — has potential, gaps to address',
+  maybe:        '~ Maybe — potential, gaps to address',
   skip:         '✕ Skip — significant mismatch',
 };
 
@@ -613,14 +808,38 @@ function scoreColor(score) {
 
 function renderDetail(job) {
   const a = job.analysis || {};
-  const isActive = job.status === 'scored' || job.status === 'new';
+  const isPending = job.status === 'new';
+  const isActive  = job.status === 'scored' || isPending;
   const rec = a.recommendation || '';
+  const posted = job.posted_at ? new Date(job.posted_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : null;
+
+  if (isPending) return `
+    <div class="detail-score-row">
+      <div class="big-score score-none">?</div>
+      <div>
+        <div class="detail-title">${esc(job.title)}</div>
+        <div class="detail-company">${esc(job.company||'Unknown')} · ${esc(job.source)}</div>
+        ${posted ? `<div class="detail-posted">Posted ${posted}</div>` : ''}
+      </div>
+    </div>
+    <div style="background:var(--ybg);border:1px solid #2a1a00;border-radius:6px;padding:14px;text-align:center;margin-bottom:16px">
+      <div style="color:var(--yellow);font-weight:700;margin-bottom:6px">⏳ Not yet scored</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px">Click Score Now to have Claude analyze this job against your profile.</div>
+      <button class="btn btn-warn" onclick="doScorePending()">⚡ Score All Pending</button>
+    </div>
+    <div class="detail-actions">
+      <a class="btn btn-ghost" href="${esc(job.url)}" target="_blank" rel="noopener">View Posting →</a>
+    </div>
+    <hr>
+    <div class="section"><div class="section-title">Job Description</div><div class="desc-box">${esc((job.description||'').slice(0,2500))}</div></div>`;
+
   return `
   <div class="detail-score-row">
-    <div class="big-score ${scoreColor(job.fit_score)}">${job.fit_score ?? '?'}</div>
+    <div class="big-score ${scoreColor(job.fit_score)}">${job.fit_score ?? '?'}<div style="font-size:1rem;text-align:center">${scoreGrade(job.fit_score)}</div></div>
     <div>
       <div class="detail-title">${esc(job.title)}</div>
       <div class="detail-company">${esc(job.company||'Unknown')} · ${esc(job.location||'')} · ${esc(job.source)}</div>
+      ${posted ? `<div class="detail-posted">Posted ${posted}</div>` : ''}
     </div>
   </div>
   ${rec ? `<div class="rec-banner rec-${rec}">${REC_LABELS[rec]||rec}</div>` : ''}
@@ -629,13 +848,13 @@ function renderDetail(job) {
       ? `<button class="btn btn-apply"  onclick="doAction('${job.id}','apply')">✓ Apply</button>
          <button class="btn btn-maybe"  onclick="doAction('${job.id}','maybe')">~ Maybe</button>
          <button class="btn btn-skip"   onclick="doAction('${job.id}','skip')">✕ Skip</button>`
-      : `<button class="btn btn-ghost btn-sm" onclick="doAction('${job.id}','reset')">↩ Reset</button>`
+      : `<button class="btn btn-ghost btn-sm" onclick="doAction('${job.id}','reset')">↩ Reset to Review</button>`
     }
     <button class="btn btn-ghost" onclick="openTailor('${job.id}','${esc(job.title).replace(/'/g,"\\'")}')">Tailor Resume</button>
     <a class="btn btn-ghost" href="${esc(job.url)}" target="_blank" rel="noopener">View Posting →</a>
   </div>
   ${a.cover_letter_hook ? `<div class="section"><div class="section-title">Cover Letter Hook</div><div class="hook-box">${esc(a.cover_letter_hook)}</div></div>` : ''}
-  ${a.score_rationale  ? `<div class="section"><div class="section-title">Why This Score</div><div style="font-size:.8rem;line-height:1.55;color:var(--muted)">${esc(a.score_rationale)}</div></div>` : ''}
+  ${a.score_rationale  ? `<div class="section"><div class="section-title">Why This Score</div><div style="font-size:.79rem;line-height:1.55;color:var(--muted)">${esc(a.score_rationale)}</div></div>` : ''}
   ${(a.strong_matches||[]).length ? `<div class="section"><div class="section-title">Strong Matches</div>${a.strong_matches.map(m=>`<div class="list-item">${esc(m)}</div>`).join('')}</div>` : ''}
   ${(a.gaps||[]).length ? `
   <div class="section"><div class="section-title">Gaps to Address</div>
@@ -663,37 +882,88 @@ async function doAction(id, action) {
 
 function setFilter(btn, status) {
   document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const idMap = {scored:'ftScored',new:'ftNew',maybe:'ftMaybe',all:'ftAll'};
+    document.getElementById(idMap[status])?.classList.add('active');
+  }
   currentFilter = status;
   selectedId = null;
   document.getElementById('detailPanel').classList.remove('open');
+
+  // Show "Score All Pending" button only on Pending tab
+  const scoreBtn = document.getElementById('filterScoreBtn');
+  scoreBtn.style.display = status === 'new' ? '' : 'none';
+
+  // Show/hide pending header
+  document.getElementById('pendingHeader').style.display = status === 'new' ? 'flex' : 'none';
+
+  // Hide alert if user is on the pending tab
+  if (status === 'new') dismissAlert();
+
   loadJobs();
 }
 
+// ── Refresh ───────────────────────────────────────────────────────────────────
 async function doRefresh() {
   const btn = document.getElementById('refreshBtn');
-  btn.innerHTML = '<span class="spinner"></span> Working…';
+  btn.innerHTML = '<span class="spinner"></span> Fetching…';
   btn.disabled = true;
   try {
     const r = await api('/refresh', {method:'POST'});
-    toast(`↻ ${r.new_jobs} new jobs fetched, ${r.scored} scored`);
+    const info = document.getElementById('lastRefreshInfo');
+    info.textContent = `Last refresh: ${new Date().toLocaleTimeString()} — ${r.new_jobs} new, ${r.scored} scored`;
+
+    if (r.errors && r.errors.length) {
+      showAlert(`<strong>Partial refresh:</strong> ${r.new_jobs} fetched, ${r.scored} scored. Errors: ${r.errors.map(esc).join(' · ')}`, true);
+    } else {
+      toast(`↻ ${r.new_jobs} new jobs · ${r.scored} scored`);
+    }
     await Promise.all([loadJobs(), loadStats()]);
     checkSetup();
   } catch(e) {
-    toast('Error: ' + e.message);
+    showAlert(`<strong>Refresh failed:</strong> ${esc(e.message)}`, true);
+    document.getElementById('alertBtn').style.display = 'none';
   } finally {
     btn.innerHTML = '↻ Refresh Jobs';
     btn.disabled = false;
   }
 }
 
+// ── Score Pending ─────────────────────────────────────────────────────────────
+async function doScorePending() {
+  const btn  = document.getElementById('refreshBtn');
+  const sBtn = document.getElementById('scoreBtn');
+  const fBtn = document.getElementById('filterScoreBtn');
+  btn.innerHTML  = '<span class="spinner"></span> Scoring…';
+  btn.disabled   = true;
+  sBtn.disabled  = true;
+  fBtn.disabled  = true;
+  dismissAlert();
+  try {
+    const r = await api('/score-pending', {method:'POST'});
+    toast(`⚡ ${r.scored} jobs scored`);
+    await Promise.all([loadJobs(), loadStats()]);
+    // Switch to To Review tab after scoring
+    if (r.scored > 0) setFilter(document.getElementById('ftScored'), 'scored');
+  } catch(e) {
+    showAlert(`<strong>Scoring failed:</strong> ${esc(e.message)}`, true);
+    document.getElementById('alertBtn').style.display = 'none';
+  } finally {
+    btn.innerHTML = '↻ Refresh Jobs';
+    btn.disabled  = false;
+    sBtn.disabled = false;
+    fBtn.disabled = false;
+  }
+}
+
 // ── History ───────────────────────────────────────────────────────────────────
 async function loadHistory(status) {
   const body = document.getElementById('historyBody');
-  body.innerHTML = '<div class="empty">Loading…</div>';
+  body.innerHTML = '<div class="empty"><p>Loading…</p></div>';
   try {
     const data = await api('/jobs?status=' + status + '&limit=200');
-    if (!data.length) { body.innerHTML = '<div class="empty">Nothing here yet</div>'; return; }
+    if (!data.length) { body.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nothing here yet.</p></div>'; return; }
     body.innerHTML = data.map(job => `
       <div class="history-card">
         <div class="badge ${badgeClass(job.fit_score)}">${job.fit_score ?? '?'}</div>
@@ -704,11 +974,11 @@ async function loadHistory(status) {
         <span class="history-status hs-${status}">${status}</span>
         <div style="display:flex;gap:5px;flex-shrink:0">
           <a class="btn btn-ghost btn-xs" href="${esc(job.url)}" target="_blank">View</a>
-          <button class="btn btn-ghost btn-xs" onclick="doHistReset('${job.id}')">↩</button>
+          <button class="btn btn-ghost btn-xs" onclick="doHistReset('${job.id}')" title="Reset to To Review">↩</button>
         </div>
       </div>`).join('');
   } catch(e) {
-    body.innerHTML = '<div class="empty">Error loading history</div>';
+    body.innerHTML = '<div class="empty"><p>Error loading history</p></div>';
   }
 }
 
@@ -721,7 +991,7 @@ function setHistFilter(btn, status) {
 
 async function doHistReset(id) {
   await api('/jobs/' + id + '/action', {method:'POST', body: JSON.stringify({action:'reset'})});
-  toast('Reset to To Review');
+  toast('↩ Reset to To Review');
   loadHistory(currentHistFilter);
   loadStats();
 }
@@ -733,7 +1003,6 @@ async function loadSettingsForm() {
   try {
     _settings = await api('/settings');
     const p = _settings.profile || {};
-
     document.getElementById('s-name').value       = p.name || '';
     document.getElementById('s-title').value      = p.current_title || '';
     document.getElementById('s-yoe').value        = p.years_experience || '';
@@ -747,10 +1016,9 @@ async function loadSettingsForm() {
     document.getElementById('s-dealbreakers').value = (p.deal_breakers||[]).join(', ');
     document.getElementById('s-priorities').value   = (p.priorities||[]).join(', ');
     document.getElementById('resumeInput').value    = _settings.resume || '';
-
     renderSources(_settings.job_sources || []);
   } catch(e) {
-    toast('Error loading settings');
+    toast('Error loading settings: ' + e.message);
   }
 }
 
@@ -758,7 +1026,7 @@ function renderSources(sources) {
   document.getElementById('sourcesList').innerHTML = sources.map((s, i) => `
     <div class="source-row" id="src-${i}">
       <input type="text" placeholder="Name" value="${esc(s.name||'')}" data-src="${i}" data-field="name">
-      <input type="text" placeholder="RSS URL" value="${esc(s.url||'')}"  data-src="${i}" data-field="url">
+      <input type="text" placeholder="RSS URL" value="${esc(s.url||'')}" data-src="${i}" data-field="url">
       <div class="source-active">
         <input type="checkbox" ${s.active !== false ? 'checked' : ''} data-src="${i}" data-field="active"> Active
       </div>
@@ -770,17 +1038,17 @@ function addSource() {
   const sources = collectSources();
   sources.push({name:'', url:'', active: true});
   renderSources(sources);
+  // Focus the new name field
+  const rows = document.querySelectorAll('.source-row');
+  rows[rows.length-1]?.querySelector('input')?.focus();
 }
 
 function removeSource(i) {
-  const sources = collectSources();
-  sources.splice(i, 1);
-  renderSources(sources);
+  renderSources(collectSources().filter((_,j) => j !== i));
 }
 
 function collectSources() {
-  const rows = document.querySelectorAll('.source-row');
-  return Array.from(rows).map(row => ({
+  return Array.from(document.querySelectorAll('.source-row')).map(row => ({
     name:   row.querySelector('[data-field=name]').value.trim(),
     url:    row.querySelector('[data-field=url]').value.trim(),
     active: row.querySelector('[data-field=active]').checked,
@@ -817,11 +1085,7 @@ async function saveSettings() {
   try {
     await api('/settings', {
       method: 'POST',
-      body: JSON.stringify({
-        profile,
-        resume:      document.getElementById('resumeInput').value,
-        job_sources: collectSources(),
-      })
+      body: JSON.stringify({ profile, resume: document.getElementById('resumeInput').value, job_sources: collectSources() })
     });
     toast('✓ Settings saved');
     document.getElementById('setupBanner').style.display = 'none';
@@ -861,7 +1125,7 @@ function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 </script>
 </body>

@@ -163,5 +163,11 @@ def refresh():
 
 @app.post("/api/score-pending")
 def score_pending():
-    scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
-    return {"scored": scored}
+    import os
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise HTTPException(status_code=400, detail="ANTHROPIC_API_KEY is not set. Add it in your Railway/Render environment variables.")
+    try:
+        scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
+        return {"scored": scored}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

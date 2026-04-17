@@ -35,43 +35,50 @@ USER_PROFILE = {
 # ─── Job Sources (RSS feeds) ──────────────────────────────────────────────────
 
 JOB_SOURCES = [
-    # We Work Remotely — Engineering & Code (reliable, no IP blocking)
+    # ── Product Management (active by default) ────────────────────────────────
+    # Remotive — Product / PM roles
     {
-        "name": "WeWorkRemotely",
-        "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+        "name": "Remotive Product",
+        "url": "https://remotive.com/remote-jobs/feed/product",
         "active": True,
     },
-    # Remotive — Software Engineering
+    # We Work Remotely — Management & Finance (PM, Operations, etc.)
     {
-        "name": "Remotive",
-        "url": "https://remotive.com/remote-jobs/feed/software-dev",
+        "name": "WWR Management",
+        "url": "https://weworkremotely.com/categories/remote-management-and-finance-jobs.rss",
         "active": True,
     },
-    # Hacker News Jobs
+    # Remote.co — Product Manager
     {
-        "name": "HackerNews",
+        "name": "Remote.co PM",
+        "url": "https://remote.co/remote-jobs/product-manager/feed/",
+        "active": True,
+    },
+    # Hacker News Jobs (broad — includes PM, eng, leadership)
+    {
+        "name": "HackerNews Jobs",
         "url": "https://hnrss.org/jobs",
         "active": True,
     },
-    # Remote.co — Developer jobs
+
+    # ── Engineering (disabled by default — enable if needed) ─────────────────
     {
-        "name": "Remote.co",
-        "url": "https://remote.co/remote-jobs/developer/feed/",
-        "active": True,
-    },
-    # Indeed blocks cloud server IPs — only works when running locally.
-    # Enable this if you're running Autopply on your own machine.
-    {
-        "name": "Indeed",
-        "url": "https://www.indeed.com/rss?q=senior+software+engineer&l=remote&sort=date",
+        "name": "Remotive Engineering",
+        "url": "https://remotive.com/remote-jobs/feed/software-dev",
         "active": False,
     },
-    # Add your own sources:
-    # {
-    #     "name": "Custom",
-    #     "url": "https://...",
-    #     "active": True,
-    # },
+    {
+        "name": "WWR Engineering",
+        "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+        "active": False,
+    },
+
+    # ── Indeed (blocks cloud IPs — only works when running locally) ───────────
+    {
+        "name": "Indeed",
+        "url": "https://www.indeed.com/rss?q=senior+product+manager&l=remote&sort=date",
+        "active": False,
+    },
 ]
 
 # ─── Dashboard Settings ───────────────────────────────────────────────────────
