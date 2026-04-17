@@ -1,4 +1,4 @@
-# Autopply
+# Jobrra
 
 An AI-powered job hunting system that turns your morning job search into a single decision loop: **Apply, Maybe, or Skip.**
 
@@ -43,8 +43,8 @@ The app has three pages accessible from the sidebar:
 **1. Clone the repo**
 
 ```bash
-git clone https://github.com/as14680/Autopply.git
-cd Autopply
+git clone https://github.com/as14680/Jobrra.git
+cd Jobrra
 ```
 
 **2. Install dependencies**
@@ -108,7 +108,7 @@ python run.py serve     # start the dashboard server
 ```bash
 crontab -e
 # Add:
-0 6 * * * cd /path/to/Autopply && source .env && python run.py refresh
+0 6 * * * cd /path/to/Jobrra && source .env && python run.py refresh
 ```
 
 ---
@@ -117,9 +117,9 @@ crontab -e
 
 Get a public URL in ~2 minutes:
 
-1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo** → select **Autopply**
+1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo** → select **Jobrra**
 2. Add environment variable: `ANTHROPIC_API_KEY` = your key
-3. Railway auto-detects the `Dockerfile` and deploys — you get a public URL like `https://autopply-production.up.railway.app`
+3. Railway auto-detects the `Dockerfile` and deploys — you get a public URL like `https://jobrra-production.up.railway.app`
 
 The `railway.toml` and `Dockerfile` are already included.
 
@@ -137,7 +137,7 @@ The `railway.toml` and `Dockerfile` are already included.
 ## Deploy to Heroku
 
 ```bash
-heroku create autopply
+heroku create jobrra
 heroku config:set ANTHROPIC_API_KEY=sk-ant-...
 git push heroku main
 heroku open
@@ -165,7 +165,7 @@ Your resume and profile are **prompt-cached** on the first scoring call each ses
 ## Project structure
 
 ```
-Autopply/
+Jobrra/
 ├── config.py          # Default profile/sources (overridden by Settings page)
 ├── resume.md          # Default resume (overridden by Settings page)
 ├── ai_engine.py       # Claude API — scoring and resume tailoring

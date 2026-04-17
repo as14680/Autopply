@@ -1,5 +1,5 @@
 """
-Autopply — FastAPI web server.
+Jobrra — FastAPI web server.
 """
 
 import json
@@ -18,7 +18,7 @@ import fetcher
 import ai_engine
 from config import MIN_SCORE_THRESHOLD, PAGE_SIZE, SCORE_BATCH_SIZE, USER_PROFILE, JOB_SOURCES
 
-app = FastAPI(title="Autopply")
+app = FastAPI(title="Jobrra")
 
 STATIC = Path(__file__).parent / "static"
 RESUME_PATH = Path(__file__).parent / "resume.md"

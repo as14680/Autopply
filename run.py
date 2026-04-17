@@ -34,7 +34,7 @@ def _check_api_key():
 def cmd_serve():
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
-    print(f"Starting Autopply at http://localhost:{port}")
+    print(f"Starting Jobrra at http://localhost:{port}")
     uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
 
 

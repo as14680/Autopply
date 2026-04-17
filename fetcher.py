@@ -76,7 +76,7 @@ def fetch_source(source: dict) -> list[dict]:
         socket.setdefaulttimeout(15)
         feed = feedparser.parse(
             source["url"],
-            agent="Mozilla/5.0 (compatible; Autopply/1.0)",
+            agent="Mozilla/5.0 (compatible; Jobrra/1.0)",
         )
         socket.setdefaulttimeout(prev)
     except Exception as e:
