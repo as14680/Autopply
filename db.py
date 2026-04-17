@@ -1,9 +1,14 @@
+import os
 import sqlite3
 import json
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "jobs.db"
+# Use DATA_DIR env var when set (e.g. a Railway persistent volume at /data).
+# Falls back to the directory containing this file for local development.
+_data_dir = Path(os.environ.get("DATA_DIR", Path(__file__).parent))
+_data_dir.mkdir(parents=True, exist_ok=True)
+DB_PATH = _data_dir / "jobs.db"
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS settings (

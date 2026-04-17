@@ -35,16 +35,22 @@ USER_PROFILE = {
 # ─── Job Sources (RSS feeds) ──────────────────────────────────────────────────
 
 JOB_SOURCES = [
-    # Indeed — customize the query string for your target role
-    {
-        "name": "Indeed",
-        "url": "https://www.indeed.com/rss?q=senior+software+engineer&l=remote&sort=date",
-        "active": True,
-    },
-    # We Work Remotely — Engineering & Code
+    # We Work Remotely — Engineering & Code (reliable, no IP blocking)
     {
         "name": "WeWorkRemotely",
         "url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+        "active": True,
+    },
+    # Remotive — Software Engineering
+    {
+        "name": "Remotive",
+        "url": "https://remotive.com/remote-jobs/feed/software-dev",
+        "active": True,
+    },
+    # Hacker News Jobs
+    {
+        "name": "HackerNews",
+        "url": "https://hnrss.org/jobs",
         "active": True,
     },
     # Remote.co — Developer jobs
@@ -53,11 +59,12 @@ JOB_SOURCES = [
         "url": "https://remote.co/remote-jobs/developer/feed/",
         "active": True,
     },
-    # Remotive — Software Engineering
+    # Indeed blocks cloud server IPs — only works when running locally.
+    # Enable this if you're running Autopply on your own machine.
     {
-        "name": "Remotive",
-        "url": "https://remotive.com/remote-jobs/feed/software-dev",
-        "active": True,
+        "name": "Indeed",
+        "url": "https://www.indeed.com/rss?q=senior+software+engineer&l=remote&sort=date",
+        "active": False,
     },
     # Add your own sources:
     # {

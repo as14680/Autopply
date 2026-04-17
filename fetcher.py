@@ -4,12 +4,13 @@ Job Fetcher — pulls listings from RSS feeds and stores new ones in the DB.
 
 import hashlib
 import re
+import socket
 import sqlite3
 from datetime import datetime, timezone
 
 import feedparser
 
-from config import JOB_SOURCES
+import config
 from db import get_db, init_db
 
 
@@ -71,9 +72,21 @@ def _extract_description(entry) -> str:
 
 def fetch_source(source: dict) -> list[dict]:
     try:
-        feed = feedparser.parse(source["url"])
+        prev = socket.getdefaulttimeout()
+        socket.setdefaulttimeout(15)
+        feed = feedparser.parse(
+            source["url"],
+            agent="Mozilla/5.0 (compatible; Autopply/1.0)",
+        )
+        socket.setdefaulttimeout(prev)
     except Exception as e:
         print(f"  [error] {source['name']}: {e}")
+        return []
+
+    if getattr(feed, "status", 200) in (301, 302, 303, 307, 308):
+        print(f"  [redirect] {source['name']}: {feed.get('href', '')}")
+    if getattr(feed, "status", 200) >= 400:
+        print(f"  [http {feed.status}] {source['name']} — skipping")
         return []
 
     jobs = []
@@ -116,8 +129,11 @@ def save_jobs(jobs: list[dict]) -> int:
 
 def fetch_all() -> int:
     init_db()
+    # Always read from config module (not a local copy) so that app.py can
+    # override config.JOB_SOURCES with DB-stored sources before calling us.
+    sources = config.JOB_SOURCES
     total = 0
-    for source in JOB_SOURCES:
+    for source in sources:
         if not source.get("active", True):
             continue
         print(f"  Fetching {source['name']}...")

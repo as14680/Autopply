@@ -131,15 +131,34 @@ def save_settings(payload: SettingsPayload):
 
 @app.post("/api/refresh")
 def refresh():
-    # Use job sources from DB settings if available
+    import traceback
+
+    # Override default sources with whatever the user saved in Settings
     sources_raw = db.get_setting("job_sources")
     if sources_raw:
         import config as _cfg
         _cfg.JOB_SOURCES = json.loads(sources_raw)
 
-    new_jobs = fetcher.fetch_all()
-    scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
-    return {"new_jobs": new_jobs, "scored": scored}
+    errors = []
+
+    try:
+        new_jobs = fetcher.fetch_all()
+    except Exception as e:
+        traceback.print_exc()
+        errors.append(f"fetch: {e}")
+        new_jobs = 0
+
+    try:
+        scored = ai_engine.score_unscored(limit=SCORE_BATCH_SIZE)
+    except Exception as e:
+        traceback.print_exc()
+        errors.append(f"score: {e}")
+        scored = 0
+
+    result = {"new_jobs": new_jobs, "scored": scored}
+    if errors:
+        result["errors"] = errors
+    return result
 
 
 @app.post("/api/score-pending")

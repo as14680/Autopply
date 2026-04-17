@@ -8,3 +8,7 @@ healthcheckPath = "/api/stats"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
+
+# Persistent volume keeps jobs.db across deploys.
+# In Railway dashboard: add a volume mounted at /data
+# Then set env var: DATA_DIR=/data
